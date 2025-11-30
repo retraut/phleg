@@ -6,9 +6,6 @@ export function assertPhlegUA(request, env) {
     }
     return null;
 }
-function generateId() {
-    return crypto.randomUUID().slice(0, 8);
-}
 async function handleUpload(request, env) {
     const uaCheck = assertPhlegUA(request, env);
     if (uaCheck)

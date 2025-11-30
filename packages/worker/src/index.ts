@@ -8,9 +8,7 @@ export function assertPhlegUA(request: Request, env: Env): Response | null {
   return null;
 }
 
-function generateId(): string {
-  return crypto.randomUUID().slice(0, 8);
-}
+
 
 async function handleUpload(request: Request, env: Env): Promise<Response> {
   const uaCheck = assertPhlegUA(request, env);
