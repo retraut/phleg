@@ -50,9 +50,11 @@ jobs:
     
     - name: Deploy Worker
       run: |
-        echo "Deployment disabled - use local deployment"
-        echo "Run: cd packages/worker && npx wrangler deploy src/index.ts"
-        # cd packages/worker
-        # npx wrangler deploy src/index.ts
-      # env:
-      #   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        cd packages/worker
+        echo "🔍 Checking Cloudflare authentication..."
+        npx wrangler whoami || echo "❌ Authentication failed"
+        echo ""
+        echo "🚀 Attempting deployment..."
+        npx wrangler deploy src/index.ts
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
