@@ -1,0 +1,27 @@
+{
+  "name": "phleg",
+  "version": "0.1.0",
+  "description": "CLI + Cloudflare Workers + R2 one-time file sharing service",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "dev:worker": "npm run dev --workspace=@phleg/worker",
+    "dev:cli": "npm run dev --workspace=@phleg/cli",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "ci": "npm run build && npm test && npm run lint"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "prettier": "^3.0.0",
+    "eslint": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

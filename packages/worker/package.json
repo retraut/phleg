@@ -1,0 +1,23 @@
+{
+  "name": "@phleg/worker",
+  "version": "0.1.0",
+  "description": "Cloudflare Worker for Phleg file sharing",
+  "private": true,
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@phleg/shared": "file:../shared"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240512.0",
+    "wrangler": "^3.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}
