@@ -12,7 +12,7 @@
     "dev:worker": "npm run dev --workspace=@phleg/worker",
     "dev:cli": "npm run dev --workspace=@phleg/cli",
     "test": "npm run test --workspaces",
-    "lint": "echo 'Lint step disabled for now'",
+    "lint": "eslint packages/*/src --ext .ts",
     "ci": "npm run build && npm test && npm run lint"
   },
   "devDependencies": {

@@ -13,7 +13,7 @@ function generateId(): string {
   return crypto.randomUUID().slice(0, 8);
 }
 
-function assertPhlegUA(request: Request, env: any): Response | null {
+function assertPhlegUA(request: Request, env: { ALLOWED_UA_PREFIX: string }): Response | null {
   const ua = request.headers.get('user-agent') || '';
   if (!ua.startsWith(env.ALLOWED_UA_PREFIX || 'phleg-cli')) {
     return new Response('Forbidden', { status: 403, statusText: 'Forbidden' });
