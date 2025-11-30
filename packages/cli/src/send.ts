@@ -3,7 +3,7 @@ import path from 'path';
 import fetch from 'node-fetch';
 import { PHLEG_UA_PREFIX } from '@phleg/shared';
 
-const PHLEG_ENDPOINT = process.env.PHLEG_ENDPOINT || 'http://localhost:8787';
+const PHLEG_ENDPOINT = process.env.PHLEG_ENDPOINT || 'https://phleg-worker.retraut.workers.dev';
 const UA = `${PHLEG_UA_PREFIX}/0.1.0`;
 
 export async function sendFile(filePath: string) {
