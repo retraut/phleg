@@ -15,5 +15,11 @@
   "exclude": ["node_modules", "dist"],
   "references": [
     { "path": "../shared" }
-  ]
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@phleg/shared": ["../shared/src/index.ts"]
+    }
+  }
 }
