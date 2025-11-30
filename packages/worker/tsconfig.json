@@ -7,17 +7,13 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["@cloudflare/workers-types"]
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
-  "references": [
-    { "path": "../shared" }
-  ],
-  "compilerOptions": {
+    "types": ["@cloudflare/workers-types"],
     "baseUrl": ".",
     "paths": {
       "@phleg/shared": ["../shared/src/index.ts"]
     }
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+
 }

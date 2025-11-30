@@ -8,18 +8,13 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "rootDir": "src",
-    "declaration": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
-  "references": [
-    { "path": "../shared" }
-  ],
-  "compilerOptions": {
+    "declaration": true,
     "baseUrl": ".",
     "paths": {
       "@phleg/shared": ["../shared/src/index.ts"]
     }
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+
 }
