@@ -1,5 +1,5 @@
 import { PHLEG_UA_PREFIX } from '@phleg/shared';
-function assertPhlegUA(request, env) {
+export function assertPhlegUA(request, env) {
     const ua = request.headers.get('user-agent') || '';
     if (!ua.startsWith(env.ALLOWED_UA_PREFIX || PHLEG_UA_PREFIX)) {
         return new Response('Forbidden', { status: 403 });
@@ -21,7 +21,7 @@ async function handleUpload(request, env) {
     const mime = request.headers.get('x-mime') || 'application/octet-stream';
     try {
         const body = await request.arrayBuffer();
-        const id = generateId();
+        const id = crypto.randomUUID().slice(0, 8);
         const meta = {
             filename,
             mime,

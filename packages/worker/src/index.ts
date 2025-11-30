@@ -1,7 +1,5 @@
 import { FileMeta, Env, PHLEG_UA_PREFIX } from '@phleg/shared';
 
-export { generateId, assertPhlegUA };
-
 export function assertPhlegUA(request: Request, env: Env): Response | null {
   const ua = request.headers.get('user-agent') || '';
   if (!ua.startsWith(env.ALLOWED_UA_PREFIX || PHLEG_UA_PREFIX)) {
@@ -10,7 +8,7 @@ export function assertPhlegUA(request: Request, env: Env): Response | null {
   return null;
 }
 
-export function generateId(): string {
+function generateId(): string {
   return crypto.randomUUID().slice(0, 8);
 }
 
@@ -28,7 +26,7 @@ async function handleUpload(request: Request, env: Env): Promise<Response> {
   
   try {
     const body = await request.arrayBuffer();
-    const id = generateId();
+    const id = crypto.randomUUID().slice(0, 8);
     
     const meta: FileMeta = {
       filename,
