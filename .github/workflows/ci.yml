@@ -54,10 +54,6 @@ jobs:
         echo "🔍 Checking Cloudflare authentication..."
         npx wrangler whoami || echo "❌ Authentication failed"
         echo ""
-        echo "🔑 Token info:"
-        echo "Token length: ${#CLOUDFLARE_API_TOKEN}"
-        echo "Token starts with: ${CLOUDFLARE_API_TOKEN:0:10}..."
-        echo ""
         echo "🚀 Attempting deployment..."
         npx wrangler deploy src/index.ts
       env:
