@@ -1,0 +1,11 @@
+name = "phleg-worker"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+
+[vars]
+ALLOWED_UA_PREFIX = "phleg-cli"
+MAX_FILE_BYTES = 104857600
+
+[[r2_buckets]]
+binding = "PHLEG_BUCKET"
+bucket_name = "phleg-files"

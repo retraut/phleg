@@ -3,5 +3,5 @@ dist/
 *.log
 .env
 .DS_Store
-wrangler.toml
+
 .env.local
