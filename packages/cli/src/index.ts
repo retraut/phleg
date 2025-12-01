@@ -9,7 +9,7 @@ const program = new Command();
 program
   .name("phleg")
   .description("CLI for Phleg one-time file sharing")
-  .version("0.1.1");
+  .version("0.2.0");
 
 program
   .command("send")
