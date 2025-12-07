@@ -1,0 +1,14 @@
+# Example CNAME file for custom domain
+# Remove the .example extension and update with your domain
+
+# For root domain:
+# phleg.dev
+
+# For subdomain:
+# www.phleg.dev
+
+# Instructions:
+# 1. Rename this file to just "CNAME" (without .example)
+# 2. Replace with your actual domain
+# 3. Configure DNS with your domain provider
+# 4. Update GitHub Pages settings to use custom domain

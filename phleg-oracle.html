@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phleg · Digital Oracle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --matrix-green: #00ff41;
+            --matrix-dark: #0a0a0a;
+            --matrix-darker: #050505;
+            --marble-white: #f5f5f5;
+            --gold-accent: #ffd700;
+            --bronze: #cd7f32;
+            --terminal-bg: rgba(10, 10, 10, 0.95);
+            --column-color: rgba(245, 245, 245, 0.1);
+            --glitch-blue: #00ffff;
+            --glitch-pink: #ff00ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier Prime', monospace;
+            background-color: var(--matrix-darker);
+            color: var(--marble-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Matrix Rain Background */
+        #matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.15;
+        }
+
+        /* Greek Column Effects */
+        .column-left, .column-right {
+            position: fixed;
+            top: 0;
+            width: 80px;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--column-color) 10%,
+                var(--column-color) 90%,
+                transparent 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .column-left {
+            left: 0;
+            border-right: 2px solid var(--matrix-green);
+            box-shadow: 0 0 30px var(--matrix-green);
+        }
+
+        .column-right {
+            right: 0;
+            border-left: 2px solid var(--matrix-green);
+            box-shadow: 0 0 30px var(--matrix-green);
+        }
+
+        .column-left::before, .column-right::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                rgba(0, 255, 65, 0.1) 20px,
+                rgba(0, 255, 65, 0.1) 40px
+            );
+            animation: scan 10s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 2rem 0;
+            border-bottom: 2px solid var(--matrix-green);
+        }
+
+        .header::before, .header::after {
+            content: '⚡';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--matrix-green);
+            font-size: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        .header::before {
+            left: 10%;
+        }
+
+        .header::after {
+            right: 10%;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .logo-main {
+            font-family: 'Cinzel', serif;
+            font-size: 5rem;
+            font-weight: 900;
+            color: var(--marble-white);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 0.5rem;
+            position: relative;
+            text-shadow:
+                0 1px 0 rgba(0, 255, 65, 0.3),
+                0 2px 0 rgba(0, 255, 65, 0.2),
+                0 3px 0 rgba(0, 255, 65, 0.1);
+        }
+
+        .logo-main::before {
+            content: 'PHLEG';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            color: var(--matrix-green);
+            z-index: -1;
+            opacity: 0.7;
+        }
+
+        .logo-main::after {
+            content: 'ΦΛΕΓ';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            color: var(--gold-accent);
+            font-size: 0.9em;
+            opacity: 0.4;
+            z-index: -2;
+        }
+
+        .logo-subtitle {
+            font-family: 'Courier Prime', monospace;
+            font-size: 1rem;
+            color: var(--matrix-green);
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-subtitle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(0, 255, 65, 0.2),
+                transparent);
+            animation: subtitle-scan 3s infinite;
+        }
+
+        @keyframes subtitle-scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes logo-pulse {
+            0%, 100% {
+                text-shadow:
+                    0 1px 0 rgba(0, 255, 65, 0.3),
+                    0 2px 0 rgba(0, 255, 65, 0.2),
+                    0 3px 0 rgba(0, 255, 65, 0.1),
+                    0 0 10px rgba(0, 255, 65, 0.1);
+            }
+            50% {
+                text-shadow:
+                    0 1px 0 rgba(0, 255, 65, 0.5),
+                    0 2px 0 rgba(0, 255, 65, 0.4),
+                    0 3px 0 rgba(0, 255, 65, 0.3),
+                    0 0 20px rgba(0, 255, 65, 0.3),
+                    0 0 30px rgba(0, 255, 65, 0.2);
+            }
+        }
+
+        .logo-main {
+            animation: logo-pulse 3s infinite;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--gold-accent);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            border-left: 3px solid var(--bronze);
+            padding-left: 1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Terminal Panel */
+        .terminal-panel {
+            background: var(--terminal-bg);
+            border: 2px solid var(--matrix-green);
+            border-radius: 8px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 0 20px rgba(0, 255, 65, 0.3),
+                inset 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+
+        .terminal-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg,
+                var(--glitch-blue),
+                var(--matrix-green),
+                var(--glitch-pink));
+            animation: scanline 3s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+            margin-right: 1rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27c93f; }
+
+        .terminal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: var(--matrix-green);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .terminal-content {
+            font-family: 'Courier Prime', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .prompt {
+            color: var(--matrix-green);
+            margin-right: 0.5rem;
+        }
+
+        .command {
+            color: var(--marble-white);
+            animation: typing 3s steps(40, end);
+        }
+
+        .output {
+            color: var(--gold-accent);
+            margin-top: 1rem;
+            padding-left: 1.5rem;
+            border-left: 2px solid var(--bronze);
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(0, 255, 65, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--matrix-green);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg,
+                transparent,
+                var(--matrix-green),
+                transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--matrix-green);
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: var(--marble-white);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-desc {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Installation Section */
+        .installation {
+            background: rgba(5, 5, 5, 0.9);
+            border: 2px solid var(--bronze);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 3rem;
+            position: relative;
+        }
+
+        .installation::before {
+            content: '📜';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--matrix-darker);
+            padding: 0 1rem;
+            font-size: 2rem;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--matrix-green);
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .code-block code {
+            color: var(--matrix-green);
+        }
+
+        .comment {
+            color: #666;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 255, 65, 0.2);
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .footer-link {
+            color: var(--matrix-green);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--gold-accent);
+            text-decoration: underline;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .logo-main {
+                font-size: 3rem;
+                letter-spacing: 0.15em;
+            }
+
+            .logo-subtitle {
+                font-size: 0.8rem;
+                letter-spacing: 0.3em;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .column-left, .column-right {
+                width: 40px;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Rain Background -->
+    <canvas id="matrix-rain"></canvas>
+
+    <!-- Greek Columns -->
+    <div class="column-left"></div>
+    <div class="column-right"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <h1 class="logo-main">PHLEG</h1>
+                <div class="logo-subtitle">DIGITAL ORACLE</div>
+            </div>
+            <p class="tagline">"The ancient art of ephemeral file sharing, reborn in the digital age. Share once, download once, vanish forever."</p>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <div class="main-content">
+                <!-- Terminal Panel -->
+                <div class="terminal-panel">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="terminal-title">Oracle Terminal</div>
+                    </div>
+                    <div class="terminal-content">
+                        <div class="command-line">
+                            <span class="prompt">oracle@phleg:~$</span>
+                            <span class="command">phleg send confidential_report.pdf</span>
+                        </div>
+                        <div class="output">
+                            <p>📁 File: confidential_report.pdf (2.4 MB)</p>
+                            <p>🔗 Share URL: https://phleg.dev/file/7x9k2p5</p>
+                            <p>⏳ Expires: After first download</p>
+                            <p>✅ Upload complete. The Oracle has spoken.</p>
+                        </div>
+
+                        <div class="command-line" style="margin-top: 2rem;">
+                            <span class="prompt">oracle@phleg:~$</span>
+                            <span class="command">phleg receive 7x9k2p5</span>
+                        </div>
+                        <div class="output">
+                            <p>🔍 Retrieving file from the digital ether...</p>
+                            <p>📥 Downloading: confidential_report.pdf</p>
+                            <p>🗑️ File marked for deletion. The cycle is complete.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div>
+                    <h2 style="font-family: 'Cinzel', serif; color: var(--gold-accent); margin-bottom: 1.5rem; font-size: 2rem;">
+                        <i class="fas fa-columns"></i> The Pillars of Phleg
+                    </h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h3 class="feature-title">One-Time Access</h3>
+                            <p class="feature-desc">Files self-destruct after first download. Like ancient scrolls that crumble after reading.</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h3 class="feature-title">Lightning Fast</h3>
+                            <p class="feature-desc">Built on Cloudflare's global edge network. Faster than Hermes' winged sandals.</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-infinity"></i>
+                            </div>
+                            <h3 class="feature-title">No Limits</h3>
+                            <p class="feature-desc">100MB file size limit. Stream large files without burdening the digital temple.</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-terminal"></i>
+                            </div>
+                            <h3 class="feature-title">CLI First</h3>
+                            <p class="feature-desc">Designed for developers and power users. Command the oracle from your terminal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Installation -->
+            <section class="installation">
+                <h2 style="font-family: 'Cinzel', serif; color: var(--marble-white); text-align: center; margin-bottom: 1.5rem; font-size: 1.8rem;">
+                    <i class="fas fa-download"></i> Summon the Oracle
+                </h2>
+
+                <div class="code-block">
+                    <code>
+                        <span class="comment"># Install the Phleg CLI globally</span><br>
+                        npm install -g phleg-cli<br><br>
+
+                        <span class="comment"># Send your first offering to the digital temple</span><br>
+                        phleg send path/to/your/file.txt<br><br>
+
+                        <span class="comment"># Receive wisdom from the ether</span><br>
+                        phleg receive &lt;file-code&gt;<br><br>
+
+                        <span class="comment"># Configure for local development</span><br>
+                        export PHLEG_ENDPOINT="http://localhost:8787"
+                    </code>
+                </div>
+
+                <p style="text-align: center; color: #aaa; font-style: italic;">
+                    "The tools of the modern oracle await. Will you heed the call?"
+                </p>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Phleg · Digital Oracle · v1.0.0</p>
+            <p>Ancient wisdom meets modern cryptography</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">GitHub</a>
+                <a href="#" class="footer-link">Documentation</a>
+                <a href="#" class="footer-link">CLI Reference</a>
+                <a href="#" class="footer-link">Contribute</a>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: #555;">
+                © 2024 Temple of Digital Ephemera. All files vanish into the ether.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Matrix Rain Effect
+        const canvas = document.getElementById('matrix-rain');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const matrix = "01";
+        const matrixArray = matrix.split("");
+
+        const font_size = 14;
+        const columns = canvas.width / font_size;
+
+        const drops = [];
+        for(let x = 0; x < columns; x++) {
+            drops[x] = Math.floor(Math.random() * canvas.height / font_size) * font_size;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(5, 5, 5, 0.04)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#00ff41";
+            ctx.font = font_size + "px 'Courier Prime', monospace";
+
+            for(let i = 0; i < drops.length; i++) {
+                const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+                ctx.fillText(text, i * font_size, drops[i] * font_size);
+
+                if(drops[i] * font_size > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                drops[i]++;
+            }
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        setInterval(drawMatrix, 35);
+
+        // Interactive terminal typing effect
+        document.addEventListener('DOMContentLoaded', function() {
+            const commands = document.querySelectorAll('.command');
+            commands.forEach(cmd => {
+                const text = cmd.textContent;
+                cmd.textContent = '';
+                let i = 0;
+
+                function typeWriter() {
+                    if (i < text.length) {
+                        cmd.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(typeWriter, 50);
+                    }
+                }
+
+                // Start typing after a delay
+                setTimeout(typeWriter, 1000);
+            });
+
+            // Add enhanced glow effect to logo on hover
+            const logo = document.querySelector('.logo-main');
+            logo.addEventListener('mouseenter', function() {
+                this.style.animation = 'logo-pulse 0.5s infinite';
+                this.style.textShadow =
+                    '0 1px 0 rgba(0, 255, 65, 0.8), ' +
+                    '0 2px 0 rgba(0, 255, 65, 0.6), ' +
+                    '0 3px 0 rgba(0, 255, 65, 0.4), ' +
+                    '0 0 30px rgba(0, 255, 65, 0.5), ' +
+                    '0 0 50px rgba(0, 255, 65, 0.3)';
+            });
+
+            logo.addEventListener('mouseleave', function() {
+                this.style.animation = 'logo-pulse 3s infinite';
+                this.style.textShadow = '';
+            });
+        });
+    </script>
+</body>
+</html>
