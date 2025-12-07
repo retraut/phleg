@@ -47,7 +47,7 @@ export async function sendFile(filePath: string) {
     };
 
     console.log(`📁 File: ${filename} (${formatFileSize(stats.size)})`);
-    console.log(`🔗 Share URL: ${PHLEG_ENDPOINT}/file/${id}`);
+    console.log(`🔗 Share ID: ${id}`);
     console.log(`⏳ Expires: After first download`);
     console.log(`✅ Upload complete. The Oracle has spoken.`);
   } catch (error) {
