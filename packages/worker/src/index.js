@@ -66,20 +66,30 @@ async function handleDownload(request, env, ctx) {
         // Mark as downloaded
         meta.downloaded = true;
         await env.PHLEG_BUCKET.put(`meta/${id}`, JSON.stringify(meta));
-        // Schedule file deletion after successful download
-        ctx.waitUntil((async () => {
+        // Create a transform stream to delete file after download completes
+        const { readable, writable } = new TransformStream();
+        const writer = writable.getWriter();
+        // Start streaming the file
+        if (fileObj.body) {
+            fileObj.body.pipeTo(writable).catch(error => {
+                console.error(`❌ Stream error for ${id}:`, error);
+            });
+        }
+        // Delete file after stream completes
+        writer.closed.then(async () => {
             try {
-                // Small delay to ensure download completes
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log(`📥 Download completed for ${id}, deleting files...`);
                 await env.PHLEG_BUCKET.delete(`files/${id}`);
                 await env.PHLEG_BUCKET.delete(`meta/${id}`);
-                console.log(`✅ File ${id} deleted successfully`);
+                console.log(`✅ File ${id} deleted successfully from R2`);
             }
             catch (error) {
                 console.error(`❌ Failed to delete file ${id}:`, error);
             }
-        })());
-        return new Response(fileObj.body, { headers });
+        }).catch(error => {
+            console.error(`❌ Writer closed with error for ${id}:`, error);
+        });
+        return new Response(readable, { headers });
     }
     catch (error) {
         return new Response('Download failed', { status: 500 });
