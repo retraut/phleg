@@ -44,6 +44,8 @@ export async function receiveFile(code: string) {
       counter++;
     }
 
+    console.log(`🔍 Retrieving file from the digital ether...`);
+
     const fileStream = fs.createWriteStream(finalPath);
     await new Promise<void>((resolve, reject) => {
       response.body?.pipe(fileStream);
@@ -51,7 +53,8 @@ export async function receiveFile(code: string) {
       fileStream.on("error", reject);
     });
 
-    console.log(`Saved ${path.basename(finalPath)}`);
+    console.log(`📥 Downloading: ${path.basename(finalPath)}`);
+    console.log(`🗑️ File marked for deletion. The cycle is complete.`);
   } catch (error) {
     console.error("Error:", error);
     process.exit(1);

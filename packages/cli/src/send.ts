@@ -38,7 +38,18 @@ export async function sendFile(filePath: string) {
     }
 
     const { id } = (await response.json()) as { id: string };
-    console.log(id);
+
+    // Format file size for display
+    const formatFileSize = (bytes: number): string => {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    };
+
+    console.log(`📁 File: ${filename} (${formatFileSize(stats.size)})`);
+    console.log(`🔗 Share URL: ${PHLEG_ENDPOINT}/file/${id}`);
+    console.log(`⏳ Expires: After first download`);
+    console.log(`✅ Upload complete. The Oracle has spoken.`);
   } catch (error) {
     console.error("Error:", error);
     process.exit(1);
