@@ -13,7 +13,9 @@
     "dev:cli": "npm run dev --workspace=@phleg/cli",
     "test": "npm run test --workspaces",
     "lint": "eslint packages/*/src --ext .ts",
-    "ci": "npm run build && npm test && npm run lint"
+    "ci": "npm run build && npm test && npm run lint",
+    "dev:setup": "npm run dev:setup --workspace=@phleg/cli",
+    "test:local": "npm run test:local --workspace=@phleg/cli"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
