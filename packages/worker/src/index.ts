@@ -1,5 +1,12 @@
 import { FileMeta, Env, PHLEG_UA_PREFIX } from '@phleg/shared';
 
+// Cloudflare Workers types
+declare global {
+  interface ExecutionContext {
+    waitUntil(promise: Promise<any>): void;
+  }
+}
+
 export function assertPhlegUA(request: Request, env: Env): Response | null {
   const ua = request.headers.get('user-agent') || '';
   if (!ua.startsWith(env.ALLOWED_UA_PREFIX || PHLEG_UA_PREFIX)) {
@@ -45,13 +52,13 @@ async function handleUpload(request: Request, env: Env): Promise<Response> {
   }
 }
 
-async function handleDownload(request: Request, env: Env): Promise<Response> {
+async function handleDownload(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const uaCheck = assertPhlegUA(request, env);
   if (uaCheck) return uaCheck;
 
   const url = new URL(request.url);
   const id = url.pathname.split('/').pop();
-  
+
   if (!id) {
     return new Response('Invalid file ID', { status: 400 });
   }
@@ -78,15 +85,22 @@ async function handleDownload(request: Request, env: Env): Promise<Response> {
       'Content-Length': meta.size.toString()
     });
 
-    // Mark as downloaded and cleanup
+    // Mark as downloaded
     meta.downloaded = true;
     await env.PHLEG_BUCKET.put(`meta/${id}`, JSON.stringify(meta));
-    
-    // Delete files after successful download
-    setTimeout(async () => {
-      await env.PHLEG_BUCKET.delete(`files/${id}`);
-      await env.PHLEG_BUCKET.delete(`meta/${id}`);
-    }, 100);
+
+    // Schedule file deletion after successful download
+    ctx.waitUntil((async () => {
+      try {
+        // Small delay to ensure download completes
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await env.PHLEG_BUCKET.delete(`files/${id}`);
+        await env.PHLEG_BUCKET.delete(`meta/${id}`);
+        console.log(`✅ File ${id} deleted successfully`);
+      } catch (error) {
+        console.error(`❌ Failed to delete file ${id}:`, error);
+      }
+    })());
 
     return new Response(fileObj.body, { headers });
   } catch (error) {
@@ -95,22 +109,22 @@ async function handleDownload(request: Request, env: Env): Promise<Response> {
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
-    
+
     switch (url.pathname) {
       case '/upload':
         if (request.method !== 'PUT') {
           return new Response('Method not allowed', { status: 405 });
         }
         return handleUpload(request, env);
-      
+
       case '/health':
         return new Response('OK');
-      
+
       default:
         if (url.pathname.startsWith('/file/') && request.method === 'GET') {
-          return handleDownload(request, env);
+          return handleDownload(request, env, ctx);
         }
         return new Response('Not found', { status: 404 });
     }

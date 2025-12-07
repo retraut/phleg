@@ -43,7 +43,7 @@ async function handleUpload(request, env) {
   }
 }
 __name(handleUpload, "handleUpload");
-async function handleDownload(request, env) {
+async function handleDownload(request, env, ctx) {
   const uaCheck = assertPhlegUA(request, env);
   if (uaCheck) return uaCheck;
   const url = new URL(request.url);
@@ -71,10 +71,16 @@ async function handleDownload(request, env) {
     });
     meta.downloaded = true;
     await env.PHLEG_BUCKET.put(`meta/${id}`, JSON.stringify(meta));
-    setTimeout(async () => {
-      await env.PHLEG_BUCKET.delete(`files/${id}`);
-      await env.PHLEG_BUCKET.delete(`meta/${id}`);
-    }, 100);
+    ctx.waitUntil((async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1e3));
+        await env.PHLEG_BUCKET.delete(`files/${id}`);
+        await env.PHLEG_BUCKET.delete(`meta/${id}`);
+        console.log(`\u2705 File ${id} deleted successfully`);
+      } catch (error) {
+        console.error(`\u274C Failed to delete file ${id}:`, error);
+      }
+    })());
     return new Response(fileObj.body, { headers });
   } catch (error) {
     return new Response("Download failed", { status: 500 });

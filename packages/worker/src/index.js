@@ -36,7 +36,7 @@ async function handleUpload(request, env) {
         return new Response('Upload failed', { status: 500 });
     }
 }
-async function handleDownload(request, env) {
+async function handleDownload(request, env, ctx) {
     const uaCheck = assertPhlegUA(request, env);
     if (uaCheck)
         return uaCheck;
@@ -63,14 +63,22 @@ async function handleDownload(request, env) {
             'Content-Disposition': `attachment; filename="${meta.filename}"`,
             'Content-Length': meta.size.toString()
         });
-        // Mark as downloaded and cleanup
+        // Mark as downloaded
         meta.downloaded = true;
         await env.PHLEG_BUCKET.put(`meta/${id}`, JSON.stringify(meta));
-        // Delete files after successful download
-        setTimeout(async () => {
-            await env.PHLEG_BUCKET.delete(`files/${id}`);
-            await env.PHLEG_BUCKET.delete(`meta/${id}`);
-        }, 100);
+        // Schedule file deletion after successful download
+        ctx.waitUntil((async () => {
+            try {
+                // Small delay to ensure download completes
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                await env.PHLEG_BUCKET.delete(`files/${id}`);
+                await env.PHLEG_BUCKET.delete(`meta/${id}`);
+                console.log(`✅ File ${id} deleted successfully`);
+            }
+            catch (error) {
+                console.error(`❌ Failed to delete file ${id}:`, error);
+            }
+        })());
         return new Response(fileObj.body, { headers });
     }
     catch (error) {
@@ -78,7 +86,7 @@ async function handleDownload(request, env) {
     }
 }
 export default {
-    async fetch(request, env) {
+    async fetch(request, env, ctx) {
         const url = new URL(request.url);
         switch (url.pathname) {
             case '/upload':
@@ -90,7 +98,7 @@ export default {
                 return new Response('OK');
             default:
                 if (url.pathname.startsWith('/file/') && request.method === 'GET') {
-                    return handleDownload(request, env);
+                    return handleDownload(request, env, ctx);
                 }
                 return new Response('Not found', { status: 404 });
         }
