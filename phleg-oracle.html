@@ -52,7 +52,7 @@
         .column-left, .column-right {
             position: fixed;
             top: 0;
-            width: 80px;
+            width: 60px;
             height: 100%;
             background: linear-gradient(90deg,
                 transparent 0%,
@@ -65,14 +65,14 @@
 
         .column-left {
             left: 0;
-            border-right: 2px solid var(--matrix-green);
-            box-shadow: 0 0 30px var(--matrix-green);
+            border-right: 1px solid var(--matrix-green);
+            box-shadow: 0 0 20px var(--matrix-green);
         }
 
         .column-right {
             right: 0;
-            border-left: 2px solid var(--matrix-green);
-            box-shadow: 0 0 30px var(--matrix-green);
+            border-left: 1px solid var(--matrix-green);
+            box-shadow: 0 0 20px var(--matrix-green);
         }
 
         .column-left::before, .column-right::before {
@@ -98,9 +98,9 @@
 
         /* Main Container */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 2rem 4rem;
             position: relative;
             z-index: 1;
         }
@@ -125,11 +125,11 @@
         }
 
         .header::before {
-            left: 10%;
+            left: 5%;
         }
 
         .header::after {
-            right: 10%;
+            right: 5%;
         }
 
         @keyframes pulse {
@@ -484,6 +484,35 @@
         }
 
         /* Responsive Adjustments */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 100%;
+                padding: 2rem 3rem;
+            }
+
+            .column-left, .column-right {
+                width: 50px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                padding: 2rem;
+            }
+
+            .column-left, .column-right {
+                width: 40px;
+            }
+
+            .header::before {
+                left: 2%;
+            }
+
+            .header::after {
+                right: 2%;
+            }
+        }
+
         @media (max-width: 768px) {
             .logo-main {
                 font-size: 3rem;
@@ -497,11 +526,34 @@
             }
 
             .column-left, .column-right {
-                width: 40px;
+                width: 30px;
             }
 
             .container {
                 padding: 1rem;
+            }
+
+            .header::before, .header::after {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.75rem;
+            }
+
+            .column-left, .column-right {
+                width: 20px;
+            }
+
+            .logo-main {
+                font-size: 2.5rem;
+                letter-spacing: 0.1em;
+            }
+
+            .main-content {
+                gap: 1.5rem;
             }
         }
     </style>
